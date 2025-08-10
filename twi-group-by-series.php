@@ -84,8 +84,26 @@ add_action('pre_get_posts', function ($query) {
 }, 999);
 
 /* ------------------------------------------------------
- * Replace Woo "No products found" with the series grid
+ * No-products branch (group mode): toggle + (optional) WOOF + grid
  * ------------------------------------------------------ */
+
+/* 0) Mobile toggle button (theme expects .filter-toggle markup) */
+add_action('woocommerce_no_products_found', function () {
+    if (isset($_GET['group_by_series']) && $_GET['group_by_series'] === '1') {
+        echo '<a href="#" class="filter-toggle" aria-expanded="false">'
+           . '<i class="bokifa-icon-filters"></i><span>' . esc_html__('Filter', 'woocommerce') . '</span>'
+           . '</a>';
+    }
+}, 0);
+
+/* 1) (Optional) WOOF panel above the grid — uncomment if you want it visible here */
+// add_action('woocommerce_no_products_found', function () {
+//     if (isset($_GET['group_by_series']) && $_GET['group_by_series'] === '1') {
+//         echo do_shortcode('[woof]');
+//     }
+// }, 1);
+
+/* 5) Series grid (unchanged) */
 add_action('woocommerce_no_products_found', function () {
     if (isset($_GET['group_by_series']) && $_GET['group_by_series'] === '1') {
         echo do_shortcode('[attribute_term_cards attribute="pa_series" products_per_term="3"]');
